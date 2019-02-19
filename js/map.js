@@ -9,7 +9,7 @@ function Map(){
 		['block','trap' ,'block','air'  ,'air'  ,'air'  ,'air'  ,'trap' ,'block','air'  ,'trap' ,'air'  ,'block'],
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'block','air'  ,'air'  ,'block','block'],
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'block','air'  ,'block','air'  ,'air'  ,'block','block'],
-		['block','trap' ,'block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'trap' ,'air'  ,'block','block'],
+		['block','trap' ,'block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'block','air'  ,'block','block'],
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'block','trap' ,'air'  ,'trap' ,'block'],
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'trap' ,'air'  ,'air'  ,'block'],
 		['block','air'  ,'air'  ,'block','trap' ,'air'  ,'trap' ,'block','air'  ,'air'  ,'trap' ,'air'  ,'block'],
