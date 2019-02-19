@@ -13,7 +13,7 @@ function Map(){
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'block','trap' ,'air'  ,'trap' ,'block'],
 		['block','air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'air'  ,'trap' ,'air'  ,'air'  ,'block'],
 		['block','air'  ,'air'  ,'block','trap' ,'air'  ,'trap' ,'block','air'  ,'air'  ,'trap' ,'air'  ,'block'],
-		['block','air'  ,'trap' ,'trap' ,'air'  ,'trap' ,'air'  ,'trap' ,'trap' ,'trap' ,'trap' ,'block' ,'block'],
+		['block','air'  ,'trap' ,'trap' ,'air'  ,'trap' ,'air'  ,'trap' ,'trap' ,'trap' ,'trap' ,'block','block'],
 		['block','block','block','block','block','block','block','block','block','block','block','block','block'],
 	];
 	function check(x,y){
