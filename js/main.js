@@ -384,8 +384,8 @@ function Entity(_type,_left,_top,_width,_height){
 }
 function main(){
 	let characterList=[
-		new Character('毒瘤Z君','red',3,1,0.6,0.6),
-		new Character('St格物','black',3,2,0.5,0.5)
+		new Character('毒瘤Z君','red',11,-1,0.6,0.6),
+		new Character('St格物','black',11,-1,0.5,0.5)
 	];
 	let map=new Map();
 	let canvas=new Canvas(document);
