@@ -1,8 +1,8 @@
 # phyjs
 -----------------------
 
-phyjs meas Physical by javascript.
+phyjs meas Physical and Javascript.
 
-just for test.
+Just for test.
 
 Enjoy yourself.
