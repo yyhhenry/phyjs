@@ -268,7 +268,6 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 	let goingRight=false;
 	let jumping=false;
 	this.replace=function(characterList,entityList,x,y,runing){
-		console.log(name,x,y);
 		for(let i=1;i<=100*x&&!this.checkImpact(characterList,entityList,runing!=false)['right'];i++){
 			left+=0.01;
 		}
