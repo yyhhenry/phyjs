@@ -17,7 +17,7 @@ function Camera(_character,_canvas){
 	let character=_character;
 	let canvas=_canvas;
 	
-	let extraWidth=10;
+	let extraWidth=30;
 	let extraHeight=extraWidth/canvas.getWidth()*canvas.getHeight();
 	
 	let left=character.getLeft()-extraWidth;
@@ -158,7 +158,7 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 		}else{
 			canvas.addImage('./img/loser.png',srcX,srcY,srcWidth,srcHeight,1);
 		}
-		canvas.addText(name,srcX-srcWidth/2,srcY-srcHeight/3,srcWidth*2,srcHeight/6,_colorOfName,'Consolas',2);
+		canvas.addText(name,srcX-canvas.getWidth(),srcY-max(20,srcHeight/3),canvas.getWidth()*2,srcHeight/6,_colorOfName,'Consolas',2);
 	}
 	
 	
