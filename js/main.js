@@ -93,7 +93,11 @@ function Canvas(_document){
 		}else{
 			levelColor='green';
 		}
-		this.addText(1000/(new Date().getTime()-lastFreshTime),0,0,100,16,levelColor,'微软雅黑',3);
+		fps=(''+fps).split('.');
+		this.addText(fps[0],0,0,5,16,levelColor,'微软雅黑',3);
+		if(fps.length>1){
+			this.addText('    .'+fps[1],32,0,100,16,levelColor,'微软雅黑',3);
+		}
 		lastFreshTime=new Date().getTime();
 	}
 	this.getWidth=function(){
