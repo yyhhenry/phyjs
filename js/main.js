@@ -1,4 +1,5 @@
 'use strict';
+let lastFreshTime;
 function min(a,b){
 	if(a<b){
 		return a;
@@ -83,6 +84,17 @@ function Canvas(_document){
 		for(let i=0;i<entityList.length;i++){
 			entityList[i].paint(this,camera);
 		}
+		let fps=1000/(new Date().getTime()-lastFreshTime);
+		let levelColor;
+		if(fps<=2){
+			levelColor='red';
+		}else if(fps<6){
+			levelColor='yellow';
+		}else{
+			levelColor='green';
+		}
+		this.addText(1000/(new Date().getTime()-lastFreshTime),0,0,100,16,levelColor,'微软雅黑',3);
+		lastFreshTime=new Date().getTime();
 	}
 	this.getWidth=function(){
 		return width;
@@ -389,7 +401,7 @@ function main(){
 	];
 	let map=new Map();
 	let canvas=new Canvas(document);
-	
+	lastFreshTime=new Date().getTime();
 	setInterval(function(){
 		let entityList=map.makeEntityList();
 		for(let i=0;i<characterList.length;i++){
