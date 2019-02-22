@@ -168,9 +168,9 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 	//physical
 	let jumpLim=2;
 	let jumpLost=0;
-	let jumpAcceleration=-12;
+	let jumpAcceleration=1.5*-12;
 	let movingAcceleration=10;
-	let gravityAcceleration=Math.PI*Math.PI;
+	let gravityAcceleration=1.5*Math.PI*Math.PI;
 	let verticalAcceleration=0;
 	let horizontalAcceleration=0;
 	let horizontalSpeed=0;
