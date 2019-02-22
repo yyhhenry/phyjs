@@ -1,5 +1,6 @@
 'use strict';
 let lastFreshTime;
+let lastCalcTime;
 let planckTime=0.0001;
 function Camera(_character,_canvas){
 	let character=_character;
@@ -168,9 +169,9 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 	//physical
 	let jumpLim=2;
 	let jumpLost=0;
-	let jumpAcceleration=1.5*-12;
+	let jumpAcceleration=-12;
 	let movingAcceleration=10;
-	let gravityAcceleration=1.5*Math.PI*Math.PI;
+	let gravityAcceleration=Math.PI*Math.PI;
 	let verticalAcceleration=0;
 	let horizontalAcceleration=0;
 	let horizontalSpeed=0;
@@ -325,7 +326,9 @@ let map=new Map();
 let canvas=new Canvas(document);
 function paint(){
 	let entityList=map.makeEntityList();
-	for(let time=lastFreshTime;time<new Date().getTime();time+=planckTime*1000){
+	let p=new Date().getTime()-lastCalcTime;
+	lastCalcTime+=p;
+	for(let time=0;time<p;time+=planckTime*1000){
 		for(let i=0;i<characterList.length;i++){
 			characterList[i].move(characterList,entityList);
 		}
@@ -335,6 +338,7 @@ function paint(){
 }
 function main(){
 	lastFreshTime=new Date().getTime();
+	lastCalcTime=new Date().getTime();
 	paint();
 	window.onkeydown=function(e){
 		console.log(e.keyCode);
