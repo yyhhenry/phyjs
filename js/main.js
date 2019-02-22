@@ -81,12 +81,17 @@ function Canvas(_document){
 		}else{
 			levelColor='green';
 		}
+		if(fps<5){
+			planckTime/=fps/5;
+		}
 		fps=(''+fps).split('.');
 		this.addText(fps[0],0,0,5,16,levelColor,'微软雅黑',3);
 		if(fps.length>1){
 			this.addText('    .'+fps[1],32,0,100,16,levelColor,'微软雅黑',3);
 		}
 		lastFreshTime=new Date().getTime();
+		this.addText('Use url search \n\'?mini\'\nor\n\'?huge\'',0,50,200,16,'black','微软雅黑',3);
+		this.addText('Air Resistance will be so large!',0,200,250,16,'black','微软雅黑',3);
 	}
 	this.getWidth=function(){
 		return width;
@@ -169,8 +174,8 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 	//physical
 	let jumpLim=2;
 	let jumpLost=0;
-	let jumpAcceleration=-12;
-	let movingAcceleration=10;
+	let jumpAcceleration=-Math.PI*Math.PI-1;
+	let movingAcceleration=Math.PI*Math.PI;
 	let gravityAcceleration=Math.PI*Math.PI;
 	let verticalAcceleration=0;
 	let horizontalAcceleration=0;
@@ -318,10 +323,18 @@ function Entity(_type,_left,_top,_width,_height){
 		canvas.addImage('./img/'+type+'.png',srcX,srcY,srcWidth,srcHeight,0);
 	}
 }
-let characterList=[
-	new Character('毒瘤Z君','red',3,1,0.6,0.6),
-	new Character('St格物','black',3,2,0.5,0.5)
-];
+let characterList;
+if(location.search=='?mini'){
+	characterList=[
+		new Character('毒瘤Z君','red',3,1,0.6,0.6),
+		new Character('St格物','black',3,2,0.5,0.5)
+	];
+}else if(location.search=='?huge'){
+	characterList=[
+		new Character('毒瘤Z君','red',1,1,0.6,0.6),
+		new Character('St格物','black',44,2,0.5,0.5)
+	];
+}
 let map=new Map();
 let canvas=new Canvas(document);
 function paint(){
@@ -337,6 +350,9 @@ function paint(){
 	setTimeout(paint,10);
 }
 function main(){
+	if(location.search==''){
+		location.search='?mini';
+	}
 	lastFreshTime=new Date().getTime();
 	lastCalcTime=new Date().getTime();
 	paint();
