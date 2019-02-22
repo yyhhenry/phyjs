@@ -1,19 +1,6 @@
 'use strict';
 let lastFreshTime;
-function min(a,b){
-	if(a<b){
-		return a;
-	}else{
-		return b;
-	}
-}
-function max(a,b){
-	if(a<b){
-		return b;
-	}else{
-		return a;
-	}
-}
+let planckTime=0.0001;
 function Camera(_character,_canvas){
 	let character=_character;
 	let canvas=_canvas;
@@ -36,10 +23,10 @@ function Camera(_character,_canvas){
 		let addBottom=_character.getTop()+_character.getHeight()+extraHeight;
 		
 		
-		left=min(left,addLeft);
-		top=min(top,addTop);
-		right=max(right,addRight);
-		bottom=max(bottom,addBottom);
+		left=Math.min(left,addLeft);
+		top=Math.min(top,addTop);
+		right=Math.max(right,addRight);
+		bottom=Math.max(bottom,addBottom);
 		
 		width=right-left;
 		height=bottom-top;
@@ -89,7 +76,7 @@ function Canvas(_document){
 		if(fps<=2){
 			levelColor='red';
 		}else if(fps<6){
-			levelColor='yellow';
+			levelColor='black';
 		}else{
 			levelColor='green';
 		}
@@ -174,129 +161,85 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 		}else{
 			canvas.addImage('./img/loser.png',srcX,srcY,srcWidth,srcHeight,1);
 		}
-		canvas.addText(name,srcX-canvas.getWidth(),srcY-max(20,srcHeight/3),canvas.getWidth()*2,srcHeight/6,_colorOfName,'Consolas',2);
+		canvas.addText(name,srcX-canvas.getWidth(),srcY-Math.max(20,srcHeight/3),canvas.getWidth()*2,srcHeight/6,_colorOfName,'Consolas',2);
 	}
 	
 	
 	//physical
-	let jumpLim=5;
+	let jumpLim=2;
 	let jumpLost=0;
-	let downAddSpeed=0.1;
-	let levelSpeed=0.4;
-	let downSpeed=0;
+	let jumpAcceleration=-12;
+	let movingAcceleration=10;
+	let gravityAcceleration=Math.PI*Math.PI;
+	let verticalAcceleration=0;
+	let horizontalAcceleration=0;
+	let horizontalSpeed=0;
+	let verticalSpeed=0;
 	this.checkLost=function(characterList,entityList){
 		for(let i=0;i<entityList.length;i++)if(entityList[i].getType()=='trap'){
-			let tLeft=max(this.getLeft(),entityList[i].getLeft());
-			let tRight=min(this.getRight(),entityList[i].getRight());
-			let tTop=max(this.getTop(),entityList[i].getTop());
-			let tBottom=min(this.getBottom(),entityList[i].getBottom());
-			if(tLeft+0.1<tRight&&tTop+0.1<tBottom){
+			let tLeft=Math.max(this.getLeft(),entityList[i].getLeft());
+			let tRight=Math.min(this.getRight(),entityList[i].getRight());
+			let tTop=Math.max(this.getTop(),entityList[i].getTop());
+			let tBottom=Math.min(this.getBottom(),entityList[i].getBottom());
+			if(tLeft>tRight||tTop>tBottom)continue;
+			if((tRight-tLeft)*(tBottom-tTop)>0.1){
 				lost=true;
 			}
 		}
 	}
-	this.getLevelSpeed=function(){
-		if(goingLeft)return -levelSpeed;
-		if(goingRight)return levelSpeed;
-		return 0;
+	let imptToAcce=10000;
+	this.checkSingleImpact=function(that){
+		let tLeft=Math.max(this.getLeft(),that.getLeft());
+		let tRight=Math.min(this.getRight(),that.getRight());
+		let tTop=Math.max(this.getTop(),that.getTop());
+		let tBottom=Math.min(this.getBottom(),that.getBottom());
+		if(tRight-tLeft<=0.01||tBottom-tTop<=0.01)return;
+		let value=imptToAcce*(tRight-tLeft-0.01)*(tBottom-tTop-0.01);
+		if(tRight-tLeft<tBottom-tTop){
+			if(that.getRight()<this.getRight()){
+				horizontalAcceleration+=value;
+			}else{
+				horizontalAcceleration-=value;
+			}
+		}else{
+			if(that.getBottom()<this.getBottom()){
+				verticalAcceleration+=value;
+			}else{
+				verticalAcceleration-=value;
+				jumpLost=jumpLim;
+			}
+		}
 	}
-	this.checkImpact=function(characterList,entityList,runing){
-		let vLeft=10;
-		let vRight=10;
-		let vTop=10;
-		let vBottom=10;
+	this.checkImpact=function(characterList,entityList){
 		for(let i=0;i<characterList.length;i++)if(characterList[i].getName()!=name){
-			if(characterList[i].getRight()>=this.getLeft()+0.01&&characterList[i].getLeft()<=this.getRight()-0.01){
-				if(characterList[i].getTop()>this.getTop()){
-					if(!impacting&&runing==true&&characterList[i].getTop()-this.getBottom()<0.02){
-						impacting=true;
-						characterList[i].replace(characterList,entityList,0,0.05);
-						impacting=false;
-					}else{
-						vBottom=min(vBottom,characterList[i].getTop()-this.getBottom());
-					}
-				}else if(characterList[i].getBottom()<this.getBottom()){
-					if(!impacting&&runing==true&&this.getTop()-characterList[i].getBottom()<0.02){
-						impacting=true;
-						characterList[i].replace(characterList,entityList,0,-0.05);
-						impacting=false;
-					}else{
-						vTop=min(vTop,this.getTop()-characterList[i].getBottom());
-					}
-				}
-			}
-			if(characterList[i].getBottom()>=this.getTop()+0.01&&characterList[i].getTop()<=this.getBottom()-0.01){
-				if(characterList[i].getLeft()>this.getLeft()){
-					if(!impacting&&runing==true&&characterList[i].getLeft()-this.getRight()<0.02){
-						impacting=true;
-						characterList[i].replace(characterList,entityList,0.05,0);
-						impacting=false;
-					}else{
-						vRight=min(vRight,characterList[i].getLeft()-this.getRight());
-					}
-				}else if(characterList[i].getRight()<this.getRight()){
-					if(!impacting&&runing==true&&this.getLeft()-characterList[i].getRight()<0.02){
-						impacting=true;
-						characterList[i].replace(characterList,entityList,-0.05,0);
-						impacting=false;
-					}else{
-						vLeft=min(vLeft,this.getLeft()-characterList[i].getRight());
-					}
-				}
-			}
+			this.checkSingleImpact(characterList[i]);
 		}
 		for(let i=0;i<entityList.length;i++)if(entityList[i].getType()=='block'){
-			if(entityList[i].getRight()>=this.getLeft()+0.01&&entityList[i].getLeft()<=this.getRight()-0.01){
-				if(entityList[i].getTop()>this.getTop()){
-					vBottom=min(vBottom,entityList[i].getTop()-this.getBottom());
-				}else if(entityList[i].getBottom()<this.getBottom()){
-					vTop=min(vTop,this.getTop()-entityList[i].getBottom());
-				}
-			}
-			if(entityList[i].getBottom()>=this.getTop()+0.01&&entityList[i].getTop()<=this.getBottom()-0.01){
-				if(entityList[i].getLeft()>this.getLeft()){
-					vRight=min(vRight,entityList[i].getLeft()-this.getRight());
-				}else if(entityList[i].getRight()<this.getRight()){
-					vLeft=min(vLeft,this.getLeft()-entityList[i].getRight());
-				}
-			}
+			this.checkSingleImpact(entityList[i]);
 		}
-		let ans=[];
-		ans['left']=(vLeft<0.01);
-		ans['right']=(vRight<0.01);
-		ans['top']=(vTop<0.01);
-		ans['bottom']=(vBottom<0.01);
-		if(vLeft<0&&vLeft>-0.5){
-			left+=-vLeft;
-		}
-		if(vRight<0&&vRight>0.5){
-			left-=-vRight;
-		}
-		if(vTop<0&&vTop>-0.5){
-			top+=-vTop;
-		}
-		if(vBottom<0&&vBottom>-0.5){
-			top-=-vBottom;
-		}
-		return ans;
 	}
 	let goingLeft=false;
 	let goingRight=false;
 	let jumping=false;
-	this.replace=function(characterList,entityList,x,y,runing){
-		for(let i=1;i<=100*x&&!this.checkImpact(characterList,entityList,runing!=false)['right'];i++){
-			left+=0.01;
+	
+	let airResistanceCoefficient=0.2;
+	this.calcAcceleration=function(){
+		verticalAcceleration=gravityAcceleration;
+		if(jumping&&jumpLost>0){
+			jumpLost-=planckTime;
+			verticalAcceleration+=jumpAcceleration;
 		}
-		for(let i=1;i<=-100*x&&!this.checkImpact(characterList,entityList,runing!=false)['left'];i++){
-			left-=0.01;
-		}
+		verticalAcceleration-=airResistanceCoefficient*verticalSpeed*Math.abs(verticalSpeed);
 		
-		for(let i=1;i<=100*y&&!this.checkImpact(characterList,entityList,runing!=false)['bottom'];i++){
-			top+=0.01;
+		horizontalAcceleration=0;
+		if(goingLeft){
+			horizontalAcceleration-=movingAcceleration;
 		}
-		for(let i=1;i<=-100*y&&!this.checkImpact(characterList,entityList,runing!=false)['top'];i++){
-			top-=0.01;
+		if(goingRight){
+			horizontalAcceleration+=movingAcceleration;
 		}
+		horizontalAcceleration-=airResistanceCoefficient*horizontalSpeed*Math.abs(horizontalSpeed);
+		
 	}
 	this.move=function(characterList,entityList){
 		if(lost){
@@ -305,38 +248,14 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 			jumping=false;
 		}
 		this.checkLost(characterList,entityList);
-		if(this.checkImpact(characterList,entityList)['bottom']){
-			if(downSpeed>0){
-				if(downSpeed>0.1){
-					downSpeed=max(-0.5,-0.1*downSpeed);
-				}else{
-					downSpeed=0;
-				}
-			}
-			jumpLost=jumpLim;
-		}else{
-			downSpeed+=downAddSpeed;
-		}
-		if(jumping&&jumpLost>0){
-			this.replace(characterList,entityList,0,-0.7);
-			jumpLost-=0.5;
-		}
-		if(this.checkImpact(characterList,entityList)['top']){
-			if(downSpeed<0){
-				if(downSpeed<-0.1){
-					downSpeed=min(0.5,-0.1*downSpeed);
-				}else{
-					downSpeed=0;
-				}
-			}
-		}
-		this.replace(characterList,entityList,0,downSpeed,false);
-		if(goingLeft){
-			this.replace(characterList,entityList,-levelSpeed,0);
-		}
-		if(goingRight){
-			this.replace(characterList,entityList,+levelSpeed,0);
-		}
+		
+		this.calcAcceleration();
+		this.checkImpact(characterList,entityList);
+		
+		left+=horizontalSpeed*planckTime+horizontalAcceleration*planckTime*planckTime;
+		top+=verticalSpeed*planckTime+verticalAcceleration*planckTime*planckTime;
+		horizontalSpeed+=horizontalAcceleration*planckTime;
+		verticalSpeed+=verticalAcceleration*planckTime;
 	}
 	this.isContain=function(x,y){
 		return(x>=left&&x<=left+width&&y>=top&&y<=top+height);
@@ -398,21 +317,25 @@ function Entity(_type,_left,_top,_width,_height){
 		canvas.addImage('./img/'+type+'.png',srcX,srcY,srcWidth,srcHeight,0);
 	}
 }
-function main(){
-	let characterList=[
-		new Character('毒瘤Z君','red',3,1,0.6,0.6),
-		new Character('St格物','black',3,2,0.5,0.5)
-	];
-	let map=new Map();
-	let canvas=new Canvas(document);
-	lastFreshTime=new Date().getTime();
-	setInterval(function(){
-		let entityList=map.makeEntityList();
+let characterList=[
+	new Character('毒瘤Z君','red',3,1,0.6,0.6),
+	new Character('St格物','black',3,2,0.5,0.5)
+];
+let map=new Map();
+let canvas=new Canvas(document);
+function paint(){
+	let entityList=map.makeEntityList();
+	for(let time=lastFreshTime;time<new Date().getTime();time+=planckTime*1000){
 		for(let i=0;i<characterList.length;i++){
 			characterList[i].move(characterList,entityList);
 		}
-		canvas.paint(characterList,entityList);
-	},100);
+	}
+	canvas.paint(characterList,entityList);
+	setTimeout(paint,10);
+}
+function main(){
+	lastFreshTime=new Date().getTime();
+	paint();
 	window.onkeydown=function(e){
 		console.log(e.keyCode);
 		if(e.keyCode==65){
