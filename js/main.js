@@ -109,6 +109,7 @@ function Canvas(_document){
 		img.style.height=height+'px';
 		img.style.zIndex=zIndex;
 		img.style.userSelect='none';
+		img.draggable=false;
 		document.body.appendChild(img);
 	}
 	this.addText=function(text,left,top,width,fontSize,color,fontFamily,zIndex){
