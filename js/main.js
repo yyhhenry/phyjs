@@ -325,7 +325,7 @@ function Entity(_type,_left,_top,_width,_height){
 	}
 }
 let characterList;
-if(location.search=='?mini'){
+if(location.search=='?mini'||location.search=='?debug'){
 	characterList=[
 		new Character('毒瘤Z君','red',3,1,0.6,0.6),
 		new Character('St格物','black',3,2,0.5,0.5)
@@ -354,11 +354,17 @@ function main(){
 	if(location.search==''){
 		location.search='?mini';
 	}
+	let isdebug=false;
+	if(location.search=='?debug'){
+		isdebug=true;
+	}
 	lastFreshTime=new Date().getTime();
 	lastCalcTime=new Date().getTime();
 	paint();
 	window.onkeydown=function(e){
-		console.log(e.keyCode);
+		if(isdebug){
+			console.log('keydown',e.keyCode);
+		}
 		if(e.keyCode==65){
 			characterList[0].goLeft();
 		}else if(e.keyCode==68){
@@ -376,6 +382,9 @@ function main(){
 		}
 	}
 	window.onkeyup=function(e){
+		if(isdebug){
+			console.log('keyup',e.keyCode);
+		}
 		if(e.keyCode==65){
 			characterList[0].stopGoLeft();
 		}else if(e.keyCode==68){

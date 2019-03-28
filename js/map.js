@@ -17,6 +17,7 @@ function Map(){
 		['block','air'  ,'trap' ,'trap' ,'air'  ,'trap' ,'air'  ,'trap' ,'trap' ,'trap' ,'trap' ,'block','block'],
 		['block','block','block','block','block','block','block','block','block','block','block','block','block'],
 	];
+	mapList['?debug']=mapList['?mini'];
 	mapList['?huge']=[
 		['block', 'air', 'block', 'air', 'air', 'air', 'block', 'air', 'air', 'air', 'air', 'air', 'air', 'block', 'block', 'air', 'air', 'air', 'air', 'block', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'block', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'block', 'air', 'block', 'air', 'block'],
 		['block', 'air', 'block', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'air', 'block', 'block', 'air', 'air', 'air', 'block', 'air', 'air', 'air', 'air', 'block', 'block', 'air', 'block', 'block', 'air', 'air', 'air', 'air', 'block', 'air', 'block'],
