@@ -1,7 +1,7 @@
 'use strict';
 let lastFreshTime;
 let lastCalcTime;
-let planckTime=0.0001;
+let planckTime=0.001;
 function Camera(_character,_canvas){
 	let character=_character;
 	let canvas=_canvas;
@@ -194,28 +194,20 @@ function Character(_name,_colorOfName,_left,_top,_width,_height){
 			}
 		}
 	}
-	let imptToAcce=10000;
+	const imptToAcce=10000;
 	this.checkSingleImpact=function(that){
 		let tLeft=Math.max(this.getLeft(),that.getLeft());
 		let tRight=Math.min(this.getRight(),that.getRight());
 		let tTop=Math.max(this.getTop(),that.getTop());
 		let tBottom=Math.min(this.getBottom(),that.getBottom());
-		if(tRight-tLeft<=0.01||tBottom-tTop<=0.01)return;
-		let value=imptToAcce*(tRight-tLeft-0.01)*(tBottom-tTop-0.01);
-		if(tRight-tLeft<tBottom-tTop){
-			if(that.getRight()<this.getRight()){
-				horizontalAcceleration+=value;
-			}else{
-				horizontalAcceleration-=value;
-			}
-		}else{
-			if(that.getBottom()<this.getBottom()){
-				verticalAcceleration+=value;
-			}else{
-				verticalAcceleration-=value;
-				jumpLost=jumpLim;
-			}
-		}
+		if(tRight-tLeft<=0||tBottom-tTop<=0)return;
+		let value=imptToAcce*(tRight-tLeft)*(tBottom-tTop);
+		let tx=this.getLeft()+this.getRight()-tLeft-tRight;
+		let ty=this.getTop()+this.getBottom()-tTop-tBottom;
+		let tz=Math.sqrt(tx*tx+ty*ty);
+		horizontalAcceleration+=value*tx/tz;
+		verticalAcceleration+=value*ty/tz;
+		jumpLost=jumpLim;
 	}
 	this.checkImpact=function(characterList,entityList){
 		for(let i=0;i<characterList.length;i++)if(characterList[i].getName()!=name){
@@ -332,8 +324,8 @@ if(location.search=='?mini'||location.search=='?debug'){
 	];
 }else if(location.search=='?huge'){
 	characterList=[
-		new Character('毒瘤Z君','red',1,1,0.6,0.6),
-		new Character('St格物','black',44,2,0.5,0.5)
+		new Character('毒瘤Z君','red',1,50,0.6,0.6),
+		new Character('St格物','black',44,51,0.5,0.5)
 	];
 }
 let map=new Map();
