@@ -1,7 +1,7 @@
 'use strict';
 let lastFreshTime;
 let lastCalcTime;
-let planckTime=0.001;
+let planckTime=0.0001;
 function Camera(_character,_canvas){
 	let character=_character;
 	let canvas=_canvas;
